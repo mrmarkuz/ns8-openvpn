@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman  openvpn-app.service
 BindsTo=openvpn.service
-After=openvpn.service mariadb-app.service
+After=openvpn.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -15,22 +15,13 @@ EnvironmentFile=-%S/state/smarthost.env
 WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
-ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/openvpn-app.pid %t/openvpn-app.ctr-id
 ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --cidfile %t/openvpn-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/openvpn.pod-id --replace -d --name  openvpn-app \
     --cap-add=MKNOD,NET_ADMIN \
-    --volume openvpn-app:/var/www/html/:Z \
-    --volume ./tmp:/tmp:Z \
-    --env=MARIADB_* \
-    --env MARIADB_DB_TYPE=mysql \
-    --env MARIADB_DB_HOST=127.0.0.1 \
-    --env MARIADB_DB_PORT=3306 \
-    --env MARIADB_DB_USER=openvpn \
-    --env MARIADB_DB_PASSWORD=openvpn \
-    --env MARIADB_DB_NAME=openvpn \
+    --volume openvpn-app:/openvpn:Z \
     ${OPENVPN_AS_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/openvpn-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP openvpn-app
