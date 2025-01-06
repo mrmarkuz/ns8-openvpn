@@ -21,6 +21,7 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --cidfile %t/openvpn-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/openvpn.pod-id --replace -d --name  openvpn-app \
+    --cap-add=MKNOD,NET_ADMIN \
     --volume openvpn-app:/var/www/html/:Z \
     --volume ./tmp:/tmp:Z \
     --env=MARIADB_* \
@@ -30,7 +31,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --env MARIADB_DB_USER=openvpn \
     --env MARIADB_DB_PASSWORD=openvpn \
     --env MARIADB_DB_NAME=openvpn \
-    ${NGINX_IMAGE}
+    ${OPENVPN_AS_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/openvpn-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP openvpn-app
 SyslogIdentifier=%u

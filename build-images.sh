@@ -11,7 +11,7 @@ set -e
 # Prepare variables for later use
 images=()
 # The image will be pushed to GitHub container registry
-repobase="${REPOBASE:-ghcr.io/nethserver}"
+repobase="${REPOBASE:-ghcr.io/mrmarkuz}"
 # Configure the image name
 reponame="openvpn"
 
@@ -36,10 +36,10 @@ buildah add "${container}" imageroot /imageroot
 buildah add "${container}" ui/dist /ui
 
 buildah config --entrypoint=/ \
-    --label="org.nethserver.authorizations=traefik@node:routeadm" \
+    --label="org.nethserver.authorizations=node:fwadm traefik@node:routeadm" \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/mariadb:10.11.5 docker.io/nginx:1.27.1-alpine3.20" \
+    --label="org.nethserver.images=docker.io/openvpn/openvpn-as:2.14.1-ff013d4d-Ubuntu22" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
