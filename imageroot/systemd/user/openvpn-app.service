@@ -21,6 +21,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --cidfile %t/openvpn-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/openvpn.pod-id --replace -d --name  openvpn-app \
     --cap-add=MKNOD,NET_ADMIN \
+    --security-opt label=disable \
+    --device /dev/net/tun \
     --volume openvpn-app:/openvpn:Z \
     ${OPENVPN_AS_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/openvpn-app.ctr-id -t 10
