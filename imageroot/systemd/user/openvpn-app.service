@@ -25,6 +25,12 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --device /dev/net/tun \
     --volume openvpn-app:/openvpn:Z \
     ${OPENVPN_AS_IMAGE}
+ExecStartPost=sleep 10
+ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k host.name -v ${TRAEFIK_HOST} ConfigPut
+ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.server.daemon.protocols -v udp ConfigPut
+ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.daemon.0.listen.protocol -v udp ConfigPut
+ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.daemon.0.listen.port -v 1194 ConfigPut
+ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k admin_ui.https.port -v 443 ConfigPut
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/openvpn-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP openvpn-app
 SyslogIdentifier=%u

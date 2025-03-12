@@ -23,7 +23,6 @@ ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/openvpn.pid \
     --pod-id-file %t/openvpn.pod-id \
     --name openvpn \
     --publish 127.0.0.1:${TCP_PORT}:443 \
-    --publish 943:943 \
     --publish 1194:1194/udp \
     --replace
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/openvpn.pod-id
