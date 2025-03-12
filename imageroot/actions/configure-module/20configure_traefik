@@ -44,7 +44,7 @@ response = agent.tasks.run(
         'host': host,
         'http2https': h2hs,
         'lets_encrypt': le,
-        'skip_cert_verify': true
+        'skip_cert_verify': True        
     },
 )
 
