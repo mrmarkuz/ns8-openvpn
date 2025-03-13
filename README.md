@@ -17,11 +17,15 @@ To install latest version on CLI:
 
 Set the FQDN to access the OpenVPN Access Server.
 
-To get the password for the openvpn user of instance openvpn1:
+To set the password SECRET for user openvpn in app instance openvpn1:
+
+    runagent -m openvpn1 podman exec openvpn-app sacli --new_pass=SECRET -u openvpn SetLocalPassword
+
+Just for info: The initial password for the openvpn user of instance openvpn1 can be found in the logs:
 
     journalctl _UID=$(id -u openvpn1) --grep "Auto-generated pass = " | cut -d '"' -f 2
 
-Browse to the FQDN and login as user openvpn with the password you got from the previous step and change the password.
+Browse to the FQDN and login as user openvpn with the password you set in the previous step.
 
 ### Admin interface
 
