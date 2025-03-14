@@ -15,7 +15,10 @@
         "test_field": "Testfeld",
         "configure_instance": "{instance} konfigurieren",
         "save": "Speichern",
-        "title": "Einstellungen"
+        "title": "Einstellungen",
+        "ldap_domain": "LDAP Domäne",
+        "choose_the_ldap_domain_to_use": "LDAP Domäne wählen oder leer lassen für lokale Authentifizierung",
+        "choose_ldap_domain": "LDAP Domäne wählen"
     },
     "common": {
         "required": "erforderlich",

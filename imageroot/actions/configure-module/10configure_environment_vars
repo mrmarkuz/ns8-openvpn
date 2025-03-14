@@ -29,16 +29,19 @@ agent.unset_env("LDAP_BIND_DN")
 agent.unset_env("LDAP_BIND_PW")
 agent.unset_env("LDAP_USERS_BASE_DN")
 agent.unset_env("LDAP_ATTR")
+agent.unset_env("LDAP_AUTH")
 
 # Check if an LDAP domain is set:
 
-if ldap_domain:
+if ldap_domain and ldap_domain != "None":
     agent.bind_user_domains([ldap_domain])
 
     # Get LDAP properties
     odom = Ldapproxy().get_domain(ldap_domain)
     base_dn = odom['base_dn']
 
+    # Set basic LDAP props
+    agent.set_env("LDAP_AUTH","ldap")
     agent.set_env("LDAP_HOST","10.0.2.2:"+odom['port'])
     agent.set_env("LDAP_BIND_DN",odom['bind_dn'])
     agent.set_env("LDAP_BIND_PW",odom['bind_password'])
@@ -50,26 +53,11 @@ if ldap_domain:
 
     if odom['schema'] == "ad":
         # Samba AD specific:
+        agent.set_env("LDAP_BIND_DN","cn=ldapservice,cn=Users,"+base_dn)
         agent.set_env("LDAP_USERS_BASE_DN","cn=Users,"+base_dn)
-        agent.set_env("LDAP_ATTR","samaccountname")
+        agent.set_env("LDAP_ATTR","sAMAccountName")
 else:
+    agent.set_env("LDAP_AUTH","local")
     agent.bind_user_domains([])
 
-#This is specific to you module, so you need to change it accordingly.
-# we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
-# Upper case to set environment variable and minor case to read from stdin
-
-# this values must exists in the json stdin
-# agent.set_env("MAIL_SERVER", data["mail_server"])
-# agent.set_env("LDAP_DOMAIN", data["ldap_domain"])
-
-# you can add default values for the following variables
-# agent.set_env("MAIL_DOMAIN",data.get("mail_domain",""))
-# agent.set_env("WOWORKERSCOUNT",data.get("workers_count",3))
-# agent.set_env("AUXILIARYACCOUNT",data.get("auxiliary_account",True))
-# agent.set_env("ACTIVESYNC",data.get("activesync",False))
-
-
-# Make sure everything is saved inside the environment file
-# just before starting systemd unit
 agent.dump_env()

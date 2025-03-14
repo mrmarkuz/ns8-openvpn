@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2025 Nethesis S.r.l.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
@@ -22,8 +22,6 @@ ExecStartPre=/bin/rm -f %t/openvpn.pid %t/openvpn.pod-id
 ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/openvpn.pid \
     --pod-id-file %t/openvpn.pod-id \
     --name openvpn \
-    --publish 127.0.0.1:${TCP_PORT}:443 \
-    --publish 1194:1194/udp \
     --replace
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/openvpn.pod-id
 ExecStop=/usr/bin/podman pod stop --ignore --pod-id-file %t/openvpn.pod-id -t 10

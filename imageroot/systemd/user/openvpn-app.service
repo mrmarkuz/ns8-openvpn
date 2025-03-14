@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2025 Nethesis S.r.l.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
@@ -20,20 +20,32 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/openvpn-app.pid \
     --cidfile %t/openvpn-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/openvpn.pod-id --replace -d --name  openvpn-app \
+    --network=slirp4netns:allow_host_loopback=true \
     --cap-add=MKNOD,NET_ADMIN \
     --security-opt label=disable \
     --device /dev/net/tun \
     --volume openvpn-app:/openvpn:Z \
+    --publish 127.0.0.1:${TCP_PORT}:443 \
+    --publish 1194:1194/udp \
     ${OPENVPN_AS_IMAGE}
 ExecStartPost=sleep 10
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k host.name -v ${TRAEFIK_HOST} ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.server.daemon.protocols -v udp ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.server.daemon.enable -v false ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.daemon.0.listen.protocol -v udp ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.daemon.0.listen.port -v 1194 ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k admin_ui.https.port -v 443 ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k cs.https.port -v 443 ConfigPut
-ExecStartPost=/usr/bin/podman exec openvpn-app sacli -k vpn.server.port_share.enable -v true ConfigPut
+ExecStartPost=/usr/bin/podman exec openvpn-app /bin/bash -c " \
+sacli -k host.name -v '${TRAEFIK_HOST}' ConfigPut; \
+sacli -k vpn.server.daemon.protocols -v udp ConfigPut; \
+sacli -k vpn.server.daemon.enable -v false ConfigPut; \
+sacli -k vpn.daemon.0.listen.protocol -v udp ConfigPut; \
+sacli -k vpn.daemon.0.listen.port -v 1194 ConfigPut; \
+sacli -k admin_ui.https.port -v 443 ConfigPut; \
+sacli -k cs.https.port -v 443 ConfigPut; \
+sacli -k vpn.server.port_share.enable -v true ConfigPut; \
+sacli -k auth.ldap.0.server.0.host -v '${LDAP_HOST}' ConfigPut; \
+sacli -k auth.ldap.0.bind_dn -v '${LDAP_BIND_DN}' ConfigPut; \
+sacli -k auth.ldap.0.bind_pw -v '${LDAP_BIND_PW}' ConfigPut; \
+sacli -k auth.ldap.0.users_base_dn -v '${LDAP_USERS_BASE_DN}' ConfigPut; \
+sacli -k auth.ldap.0.uname_attr -v '${LDAP_ATTR}' ConfigPut; \
+sacli -k auth.ldap.0.enable -v true ConfigPut; \
+sacli -k auth.module.type -v '${LDAP_AUTH}' ConfigPut; \
+sacli start"
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/openvpn-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP openvpn-app
 SyslogIdentifier=%u
