@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2025 Nethesis S.r.l.
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
@@ -12,6 +12,46 @@ import agent
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
+
+# Get LDAP domain
+ldap_domain = data.get("ldap_domain", "")
+
+# Set LDAP domain
+
+agent.set_env("LDAP_DOMAIN",ldap_domain)
+
+# unset LDAP
+
+agent.unset_env("LDAP_HOST")
+agent.unset_env("LDAP_BIND_DN")
+agent.unset_env("LDAP_BIND_PW")
+agent.unset_env("LDAP_USERS_BASE_DN")
+agent.unset_env("LDAP_ATTR")
+
+# Check if an LDAP domain is set:
+
+if ldap_domain:
+    agent.bind_user_domains([ldap_domain])
+
+    # Get LDAP properties
+    odom = Ldapproxy().get_domain(ldap_domain)
+    base_dn = odom['base_dn']
+
+    agent.set_env("LDAP_HOST","10.0.2.2:"+odom['port'])
+    agent.set_env("LDAP_BIND_DN",odom['bind_dn'])
+    agent.set_env("LDAP_BIND_PW",odom['bind_password'])
+
+    if odom['schema'] == "rfc2307":
+        # OpenLDAP specific:
+        agent.set_env("LDAP_USERS_BASE_DN","ou=People,"+base_dn)
+        agent.set_env("LDAP_ATTR","uid")
+
+    if odom['schema'] == "ad":
+        # Samba AD specific:
+        agent.set_env("LDAP_USERS_BASE_DN","cn=Users,"+base_dn)
+        agent.set_env("LDAP_ATTR","samaccountname")
+else:
+    agent.bind_user_domains([])
 
 #This is specific to you module, so you need to change it accordingly.
 # we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
@@ -30,4 +70,4 @@ data = json.load(sys.stdin)
 
 # Make sure everything is saved inside the environment file
 # just before starting systemd unit
-#agent.dump_env()
+agent.dump_env()
