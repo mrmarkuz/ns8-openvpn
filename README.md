@@ -15,7 +15,7 @@ To install latest version on CLI:
 
 ## Configure
 
-Set the FQDN to access the OpenVPN Access Server.
+Set the FQDN to access the OpenVPN Access Server. You could set an LDAP domain or leave it empty for local authentication.
 
 To set the password SECRET for user openvpn in app instance openvpn1:
 
@@ -38,7 +38,3 @@ Here you can create users.
 Browse to https://openvpn.domain.tld and login
 
 Here you can download/import the VPN configuration to a client device.
-
-### TODO
-
-- LDAP
