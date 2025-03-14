@@ -61,6 +61,28 @@
                 $t("settings.enabled")
               }}</template>
             </cv-toggle>
+                        
+              <!-- LDAP domain -->
+            <NsComboBox              
+              v-model.trim="ldap_domain"
+              :autoFilter="true"
+              :autoHighlight="true"
+              :title="$t('settings.ldap_domain')"
+              :label="$t('settings.choose_ldap_domain')"
+              :options="domains_list"
+              :acceptUserInput="false"
+              :showItemType="true"
+              :invalid-message="$t(error.ldap_domain)"
+              :disabled="loading.getConfiguration || loading.configureModule"
+              tooltipAlignment="start"
+              tooltipDirection="top"
+              ref="ldap_domain"
+            >
+              <template slot="tooltip">
+                {{ $t("settings.choose_the_ldap_domain_to_use") }}
+              </template>
+            </NsComboBox>
+
               <!-- advanced options -->
             <cv-accordion ref="accordion" class="maxwidth mg-bottom">
               <cv-accordion-item :open="toggleAccordion[0]">
@@ -125,6 +147,8 @@ export default {
       host: "",
       isLetsEncryptEnabled: false,
       isHttpToHttpsEnabled: true,
+      ldap_domain: "",
+      domains_list: [],
       loading: {
         getConfiguration: false,
         configureModule: false,
@@ -135,6 +159,7 @@ export default {
         host: "",
         lets_encrypt: "",
         http2https: "",
+        ldap_domain: "",
       },
     };
   },
@@ -202,6 +227,12 @@ export default {
       this.host = config.host;
       this.isLetsEncryptEnabled = config.lets_encrypt;
       this.isHttpToHttpsEnabled = config.http2https;
+      this.domains_list = config.domains_list;
+      // this.ldap_domain = config.ldap_domain;
+      // force to reload value after dom update
+      this.$nextTick(() => {
+        this.ldap_domain = config.ldap_domain;
+      });
 
       this.loading.getConfiguration = false;
       this.focusElement("host");
@@ -218,6 +249,19 @@ export default {
         }
         isValidationOk = false;
       }
+      
+      // Disable to require ldap_domain:
+     
+      // if (!this.ldap_domain) {
+      //  this.error.ldap_domain = this.$t("settings.required");
+
+      //  if (isValidationOk) {
+      //    this.focusElement("ldap_domain");
+      //    isValidationOk = false;
+      //  }
+      // }
+    
+
       return isValidationOk;
     },
     configureModuleValidationFailed(validationErrors) {
@@ -271,6 +315,7 @@ export default {
             host: this.host,
             lets_encrypt: this.isLetsEncryptEnabled,
             http2https: this.isHttpToHttpsEnabled,
+            ldap_domain: this.ldap_domain,
           },
           extra: {
             title: this.$t("settings.instance_configuration", {
