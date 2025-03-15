@@ -36,6 +36,8 @@ Just for info: The initial password for the openvpn user of instance openvpn1 ca
 
 Browse to the FQDN and login as user openvpn with the password you set in the previous step.
 
+You need to portforward UDP port 1194 to the NS8 when it's in a LAN behind a router/firewall to be able to establish a VPN connection.
+
 ### Admin interface
 
 Browse to https://openvpn.domain.tld/admin
