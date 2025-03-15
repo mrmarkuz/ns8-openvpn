@@ -2,6 +2,15 @@
 
 [OpenVPN Access Server](https://openvpn.net/access-server) is a secure remote access solution to your private network, in the cloud or on-prem.
 
+## Features
+
+  - Admin web interface to create local users
+  - Client web interface to download profiles for various devices.
+  - LDAP
+  - Cluster (untested)
+  - OpenVPN over UDP Port 1194
+  - Unfortunately just 2 concurrent VPN connections possible in free version
+
 ## Install
 
 Install via Software center:
