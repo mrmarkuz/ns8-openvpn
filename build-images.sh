@@ -39,7 +39,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.authorizations=node:fwadm traefik@node:routeadm cluster:accountconsumer" \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/openvpn/openvpn-as:3.0.1-84b60e70-Ubuntu24" \
+    --label="org.nethserver.images=docker.io/openvpn/openvpn-as:3.1.0-e22fe316-Ubuntu24" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
