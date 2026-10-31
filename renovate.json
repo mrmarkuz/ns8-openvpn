@@ -1,23 +1,14 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "ignorePaths": [
-    "**/ui/**",
-    "**/.devcontainer/**"
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/build-images.sh/"
-      ],
-      "matchStrings": [
-        "docker\\.io/openvpn/openvpn-as:(?<currentValue>[-0-9\\.a-z]+)"
-      ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "openvpn/openvpn-as"
-    }
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "local>NethServer/.github:ns8-automerge"
+    ],
+    "packageRules": [
+        {
+            "matchDatasources": ["docker"],
+            "matchPackageNames": ["openvpn/openvpn-as"],
+            "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>[a-f0-9]+)-Ubuntu(?<compatibility>\\d+)$"
+
+        }
+    ]
 }

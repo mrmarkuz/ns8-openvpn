@@ -1,19 +1,23 @@
 {
-  "name": "openvpn",
+  "name": "OpenVPN Access Server",
   "description": {
-    "en": "My openvpn module"
+    "en": "OpenVPN Access Server is a secure remote access solution to your private network",
+    "de": "OpenVPN Access Server ist eine sichere Lösung für den Fernzugriff auf Ihr privates Netzwerk",
+    "fr": "OpenVPN Access Server est une solution d’accès à distance sécurisé à votre réseau privé",
+    "it": "OpenVPN Access Server è una soluzione di accesso remoto sicuro alla propria rete privata",
+    "es": "OpenVPN Access Server es una solución de acceso remoto seguro a su red privada"
   },
-  "categories": [],
+  "categories": ["collaboration"],
   "authors": [
     {
-      "name": "Name Surname",
-      "email": "author@yourmail.org"
+      "name": "Markus Neuberger",
+      "email": "dev@markusneuberger.at"
     }
   ],
   "docs": {
-    "documentation_url": "https://docs.openvpn.com/",
-    "bug_url": "https://github.com/NethServer/dev",
-    "code_url": "https://github.com/author/ns8-openvpn"
+    "documentation_url": "https://openvpn.net/as-docs",
+    "bug_url": "https://community.nethserver.org",
+    "code_url": "https://github.com/mrmarkuz/ns8-openvpn"
   },
-  "source": "ghcr.io/nethserver/openvpn"
+  "source": "ghcr.io/mrmarkuz/openvpn"
 }

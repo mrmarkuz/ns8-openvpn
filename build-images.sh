@@ -21,7 +21,7 @@ container=$(buildah from scratch)
 # Reuse existing nodebuilder-openvpn container, to speed up builds
 if ! buildah containers --format "{{.ContainerName}}" | grep -q nodebuilder-openvpn; then
     echo "Pulling NodeJS runtime..."
-    buildah from --name nodebuilder-openvpn -v "${PWD}:/usr/src:Z" docker.io/library/node:lts
+    buildah from --name nodebuilder-openvpn -v "${PWD}:/usr/src:Z" docker.io/library/node:24.22.2
 fi
 
 echo "Build static UI files with node..."
