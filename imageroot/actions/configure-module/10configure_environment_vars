@@ -18,6 +18,13 @@ data = json.load(sys.stdin)
 # Get LDAP domain
 ldap_domain = data.get("ldap_domain", "")
 
+# Get traefik data
+host = data.get("host")
+h2hs = data.get("http2https", True)
+
+agent.set_env("TRAEFIK_HOST", host)
+agent.set_env("TRAEFIK_HTTP2HTTPS", h2hs)
+
 # Set LDAP domain
 
 agent.set_env("LDAP_DOMAIN",ldap_domain)
