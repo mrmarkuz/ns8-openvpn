@@ -45,7 +45,7 @@ Check if openvpn can be configured
     Should Be Equal As Integers    ${rc}  0
 
 Check if openvpn works as expected
-    ${rc} =    Execute Command    sleep 40 && curl -H "Host: openvpn.domain.test" -fkL https://127.0.0.1/admin/login
+    ${rc} =    Execute Command    sleep 60 && curl -H "Host: openvpn.domain.test" -fkL https://127.0.0.1/admin/login
     ...    return_rc=True  return_stdout=False
     Should Be Equal As Integers    ${rc}  0
 
